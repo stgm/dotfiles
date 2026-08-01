@@ -1,0 +1,36 @@
+# Zstandard is a real-time compression algorithm
+brew "zstd"
+# Source code beautifier for C, C++, C#, and Java
+brew "astyle"
+# Formatting tools for C, C++, Obj-C, Java, JavaScript, TypeScript
+brew "clang-format"
+# Play, record, convert, and stream audio and video
+brew "ffmpeg"
+# GitHub command-line tool
+brew "gh"
+# Implementation of the file(1) command
+brew "libmagic"
+# Postgres C API library
+brew "libpq"
+# Turn marked-up plain text into well-formatted documents
+brew "multimarkdown"
+# Parse HTML at the command-line
+brew "pup"
+# Fast Ruby version manager (provides Ruby; do not install brew "ruby")
+brew "rv"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+# Extremely fast Python package installer and resolver
+brew "uv"
+# Mac App Store command-line interface
+brew "mas"
+# Code editor
+cask "zed"
+# Presentations from Markdown
+cask "deckset"
+# All-In-One Toolkit for Working Remotely
+cask "basecamp"
+# Web browser
+cask "firefox"
+# Multimedia player
+cask "vlc"
