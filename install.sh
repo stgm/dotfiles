@@ -40,6 +40,7 @@ say "Symlinking configs"
 ./setup/homebrew.sh
 ./setup/python.sh
 ./setup/mac_defaults.sh
+./setup/terminal.sh
 ./setup/touchid_sudo.sh
 
 # GitHub auth, needed before cloning over SSH below

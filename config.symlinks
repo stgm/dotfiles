@@ -2,7 +2,7 @@ zsh/.zshrc -> ~/.zshrc
 zsh/.zshenv -> ~/.zshenv
 zsh/.zprofile -> ~/.zprofile
 git/.gitconfig -> ~/.gitconfig
-git/.gitignore_global -> ~/.gitignore_global
+git/ignore -> ~/.config/git/ignore
 ssh/config -> ~/.ssh/config
 zed/settings.json -> ~/.config/zed/settings.json
 zed/keymap.json -> ~/.config/zed/keymap.json

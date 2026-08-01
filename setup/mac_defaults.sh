@@ -5,11 +5,7 @@ source "$(dirname "$0")/lib.sh"
 
 say "macOS defaults"
 
-# Some domains are protected: com.apple.universalaccess needs the terminal
-# running this to have Full Disk Access (System Settings > Privacy &
-# Security), and sandboxed apps like TextEdit and Safari keep their
-# preferences in a container that defaults(1) cannot always reach. A refused
-# write must not abort the rest, so report it and carry on.
+# Reports failed writes
 set_default() {
     defaults write "$@" 2>/dev/null || skip "could not write $1 $2"
 }

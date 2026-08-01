@@ -9,13 +9,14 @@
     {
         "context": "Workspace",
         "bindings": {
-            // "shift shift": "file_finder::Toggle"
+            // Prevent closing the sidebar
             "cmd-w": null
         }
     },
     {
         "context": "Editor",
         "bindings": {
+            // Example:
             // "j k": ["workspace::SendKeystrokes", "escape"]
         }
     }

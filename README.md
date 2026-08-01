@@ -1,13 +1,13 @@
 # dotfiles
 
 Personal Mac bootstrap: shell/git/ssh config, Homebrew packages, macOS defaults,
-and setup of the `course-site` project.
+the Terminal profile, and setup of the `course-site` project.
 
 ## Install script
 
-Download first, then run. The script prompts for a few things (Homebrew, the
-SSH key passphrase, the course-site credentials key), so it needs a real
-terminal on stdin -- piping it straight into `bash` breaks those prompts.
+Download first, then run. This instead of piping the download directly into
+bash, asthe script uses keyboard prompts for a few things (Homebrew, the SSH 
+key passphrase, the course-site credentials key).
 
 ```bash
 curl -fsSLo /tmp/install.sh https://raw.githubusercontent.com/stgm/dotfiles/main/install.sh && bash /tmp/install.sh
@@ -18,6 +18,11 @@ Or, if already cloned:
 ```bash
 ./install.sh
 ```
+
+The Terminal profile in `terminal/` is imported and made the default, but only
+takes effect in windows opened after Terminal is restarted. Zed's extensions,
+including the `macOS Classic` theme the settings ask for, are pulled in by Zed
+itself on first launch via `auto_install_extensions`.
 
 ## The **work** command
 

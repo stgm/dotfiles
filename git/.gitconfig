@@ -3,9 +3,6 @@
 	name = Martijn Stegeman
 	email = martijn@stgm.nl
 
-[core]
-	excludesFile = ~/.gitignore_global
-
 [init]
 	defaultBranch = main
 

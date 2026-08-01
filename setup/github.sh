@@ -17,10 +17,16 @@ say "GitHub"
 if gh auth status >/dev/null 2>&1; then
     skip "already authenticated"
 else
-    gh auth login --git-protocol ssh --hostname github.com
+    gh auth login --git-protocol ssh --hostname github.com --scopes admin:public_key
 fi
 
-if gh ssh-key list 2>/dev/null | grep -q "$(awk '{print $2}' ~/.ssh/id_ed25519.pub)"; then
+# Ensure API access for keys if previously auth'ed without that
+if ! gh api user/keys --silent >/dev/null 2>&1; then
+    info "gh needs the admin:public_key scope, opening the browser"
+    gh auth refresh --hostname github.com --scopes admin:public_key
+fi
+
+if gh ssh-key list | grep -q "$(awk '{print $2}' ~/.ssh/id_ed25519.pub)"; then
     skip "key already registered with GitHub"
 else
     gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(scutil --get ComputerName 2>/dev/null || hostname)"

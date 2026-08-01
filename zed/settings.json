@@ -10,9 +10,19 @@
     "cli_default_open_behavior": "new_window",
     "telemetry": {
         "diagnostics": false,
-        "metrics": true
+        "metrics": false
     },
     "file_scan_exclusions": ["**/.claude"],
+    // Pulled from the extension registry on first launch. This is also how the
+    // macOS Classic theme below gets installed.
+    "auto_install_extensions": {
+        "macos-classic": true,
+        "ruby": true,
+        "html": true,
+        "log": true,
+        "toml": true,
+        "typespec": true,
+    },
     "outline_panel": {
         "dock": "left",
     },
@@ -72,11 +82,11 @@
     "ui_font_size": 16,
     "buffer_font_size": 15,
     "theme": {
-        "mode": "system",
-        "light": "VSCode Light+",
-        "dark": "One Dark",
+        "mode": "light",
+        "light": "macOS Classic Light",
+        "dark": "macOS Classic Dark",
     },
-    "soft_wrap": "preferred_line_length",
+    "soft_wrap": "prefer_line",
     "tab_size": 4,
     "base_keymap": "TextMate",
     "language_models": {
