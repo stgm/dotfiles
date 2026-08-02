@@ -26,7 +26,10 @@ if ! gh api user/keys --silent >/dev/null 2>&1; then
     gh auth refresh --hostname github.com --scopes admin:public_key
 fi
 
-if gh ssh-key list | grep -q "$(awk '{print $2}' ~/.ssh/id_ed25519.pub)"; then
+# Use the API directly: `gh ssh-key list` also queries the signing-key
+# endpoint, which warns unless the token has admin:ssh_signing_key.
+if gh api user/keys --jq '.[].key' | awk '{print $2}' |
+    grep -qxF "$(awk '{print $2}' ~/.ssh/id_ed25519.pub)"; then
     skip "key already registered with GitHub"
 else
     gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(scutil --get ComputerName 2>/dev/null || hostname)"
