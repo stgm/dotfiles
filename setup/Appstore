@@ -1,0 +1,11 @@
+#
+# -- Mac App Store apps, installed by ./install-appstore.sh --
+#
+# One app per line: <id> <name>. The id is the number at the end of the App
+# Store URL. Kept out of the Brewfile because these need an Apple Account that
+# actually bought them.
+#
+# Safari extension: answers cookie consent dialogs
+1606897889  Consent-O-Matic
+# Safari extension: blocks site annoyances
+6471380298  StopTheMadness Pro

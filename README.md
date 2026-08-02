@@ -19,10 +19,29 @@ Or, if already cloned:
 ./install.sh
 ```
 
+## Specifics
+
+### App Store
+
+App Store apps are listed in `setup/Appstore`, not in the Brewfile, and are not
+installed by `install.sh`. The App Store gives no way to check whether an app is
+in the signed-in Apple Account, and installing one it never bought raises a
+"redownload is not possible" dialog, so run this yourself on a Mac where those
+apps are actually bought:
+
+```bash
+./install-appstore.sh
+```
+
+### Terminal
+
 The Terminal profile in `terminal/` is imported and made the default, but only
-takes effect in windows opened after Terminal is restarted. Zed's extensions,
-including the `macOS Classic` theme the settings ask for, are pulled in by Zed
-itself on first launch via `auto_install_extensions`.
+takes effect in windows opened after Terminal is restarted.
+
+### Zed
+
+Zed's extensions, including the `macOS Classic` theme the settings ask for, are
+downloaded by Zed itself on first launch via `auto_install_extensions`.
 
 ## The **work** command
 

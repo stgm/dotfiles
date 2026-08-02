@@ -46,10 +46,4 @@ cask "vlc"
 # Claude desktop app
 cask "claude"
 
-#
-# -- Mas (app store) installs --
-#
-# Safari extension: answers cookie consent dialogs
-mas "Consent-O-Matic", id: 1606897889
-# Safari extension: blocks site annoyances
-mas "StopTheMadness Pro", id: 6471380298
+# App Store apps are listed in setup/Appstore, installed by ./install-appstore.sh
