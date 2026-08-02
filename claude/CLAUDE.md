@@ -9,7 +9,7 @@ Use plain, literal words. Say what you mean with the ordinary term for it.
 - Say "fix", not "tackle" or "wrangle".
 - Say "fast", not "blazing fast" or "lightning quick".
 
-There are just examples.
+These are just examples.
 
 No metaphors, no idioms, no hype adjectives (seamless, robust, powerful,
 elegant, comprehensive), no filler enthusiasm (great question, perfect,
