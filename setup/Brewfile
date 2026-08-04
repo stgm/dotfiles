@@ -13,7 +13,8 @@ brew "ffmpeg"
 brew "gh"
 # Implementation of the file(1) command
 brew "libmagic"
-# Postgres C API library
+# Postgres C API library. Not on PATH: the pg gem ships a precompiled binary
+# with its own copy. Kept for the case where pg has to build from source.
 brew "libpq"
 # Turn marked-up plain text into well-formatted documents
 brew "multimarkdown"

@@ -38,6 +38,14 @@ say "Symlinking configs"
 ./link.sh
 
 ./setup/homebrew.sh
+
+# homebrew.sh ran as its own process, so the PATH it set went with it. This
+# script cannot source setup/lib.sh, which does the same for the setup scripts,
+# so it needs its own copy before it calls anything Homebrew installed.
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 ./setup/python.sh
 ./setup/mac_defaults.sh
 ./setup/terminal.sh

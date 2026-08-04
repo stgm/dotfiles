@@ -1,13 +1,19 @@
-# Keep PATH free of duplicates when shells nest or configs are re-sourced
+##############################################################################
+# .zshenv
+#
+# Read by every zsh: login shells, interactive shells and scripts alike, before
+# any other startup file. So it holds only static values that cost nothing and
+# cannot be got wrong. PATH is built in .zprofile
+
+##############################################################################
+# Clean up the path list, removing dupes
 typeset -U path PATH
 
-export PATH="$HOME/.local/bin:$PATH"
+##############################################################################
+# Default editor
+export EDITOR="zed --wait"
 
-# Headers and libraries for building native extensions against Homebrew
+##############################################################################
+# C compiler paths
 export C_INCLUDE_PATH=/opt/homebrew/include
 export LIBRARY_PATH=/opt/homebrew/lib
-
-# Needed by the pg gem
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-
-export EDITOR="zed --wait"
