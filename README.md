@@ -28,7 +28,15 @@ at any time and will only do what is still missing.
 
 The Linux target is Fedora, in practice Asahi Linux on Apple Silicon. Package
 prerequisites are installed with `dnf`; on another distribution the script
-prints what it needs and stops.
+prints what it needs and stops. They include a C and C++ compiler, which gems
+with native extensions need -- Fedora installs `gcc` but not `gcc-c++`, and
+`mini_racer` compiles C++.
+
+`course-site`'s `Gemfile.lock` has to list the platform of the machine, which is
+`aarch64-linux` on Asahi. Without it the precompiled `sqlite3`, `nokogiri` and
+`libv8-node` gems do not resolve and Rails cannot boot. Add a platform with
+`bundle lock --add-platform <platform>` in the course-site clone and commit the
+lockfile.
 
 The CLI tools come from Homebrew on Linux, using the same `setup/Brewfile` as
 the Mac. Everything in it has a Linux bottle. `mas` and the casks are in

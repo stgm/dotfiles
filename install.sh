@@ -35,30 +35,41 @@ if is_mac; then
     fi
 else
     # What Homebrew on Linux needs to build and run, plus zsh and git for the
-    # rest of this script. util-linux-user is what provides chsh: Fedora does
-    # not install it by default.
-    packages=(curl file git procps-ng util-linux-user zsh)
-
-    if ! command -v dnf >/dev/null 2>&1; then
-        info "this only knows how to install packages with dnf (Fedora/Asahi)"
-        info "install these yourself, plus a C toolchain, then re-run:"
-        info "${packages[*]}"
-        exit 1
-    fi
+    # rest of this script and a C/C++ toolchain for gems with native extensions
+    # (mini_racer compiles C++, so gcc alone is not enough).
+    #
+    # Listed as command:package and checked by command, not by package name: a
+    # package that a Fedora release renames or folds into another one still
+    # reports as missing forever under rpm -q, and chsh in particular moved from
+    # util-linux-user into util-linux.
+    prerequisites=(
+        curl:curl
+        file:file
+        git:git
+        ps:procps-ng
+        chsh:util-linux-user
+        zsh:zsh
+        gcc:gcc
+        c++:gcc-c++
+        make:make
+    )
 
     missing=()
-    for package in "${packages[@]}"; do
-        rpm -q "$package" >/dev/null 2>&1 || missing+=("$package")
+    for prerequisite in "${prerequisites[@]}"; do
+        command -v "${prerequisite%%:*}" >/dev/null 2>&1 ||
+            missing+=("${prerequisite#*:}")
     done
-    if ! dnf group list --installed 2>/dev/null | grep -qi 'development tools'; then
-        missing+=(@development-tools)
-    fi
 
     if [ ${#missing[@]} -eq 0 ]; then
         skip "all packages already installed"
-    else
+    elif command -v dnf >/dev/null 2>&1; then
         info "installing: ${missing[*]}"
         sudo dnf install -y "${missing[@]}"
+    else
+        info "this only knows how to install packages with dnf (Fedora/Asahi)"
+        info "install these yourself, then re-run:"
+        info "${missing[*]}"
+        exit 1
     fi
 
     # macOS already uses zsh, Fedora defaults to bash. Read the passwd entry

@@ -5,7 +5,16 @@ source "$(dirname "$0")/lib.sh"
 
 say "course-site"
 if [ -d ~/dev/stgm/course-site ]; then
-    skip "already cloned"
+    # Bring the clone up to date, since the gems installed below are read from
+    # its Gemfile.lock. Only fast-forward, and only from a clean tree: work in
+    # progress is left alone rather than merged or stashed behind your back.
+    if [ -n "$(git -C ~/dev/stgm/course-site status --porcelain)" ]; then
+        skip "already cloned, not updated -- uncommitted changes"
+    elif git -C ~/dev/stgm/course-site pull --ff-only --quiet; then
+        skip "already cloned, up to date"
+    else
+        skip "already cloned, could not fast-forward -- update it yourself"
+    fi
 else
     git clone git@github.com:stgm/course-site.git ~/dev/stgm/course-site
 fi
@@ -43,6 +52,17 @@ if rv run bundle check >/dev/null 2>&1; then
     skip "gems already installed"
 else
     rv ci
+    # rv ci installs what Gemfile.lock names for a platform it knows, and
+    # reports success while gems for this machine's platform are still missing.
+    # Say so here rather than letting the next step fail on a missing gem.
+    if ! rv run bundle check >/dev/null 2>&1; then
+        platform="$(rv run ruby -e 'puts Gem::Platform.local' 2>/dev/null)"
+        info "the bundle is still incomplete: Gemfile.lock has no gems for"
+        info "this platform (${platform:-unknown}). In the course-site clone run:"
+        info "    rv run bundle lock --add-platform ${platform%-gnu}"
+        info "then commit the lockfile and re-run this script."
+        exit 1
+    fi
 fi
 
 say "Development database"
