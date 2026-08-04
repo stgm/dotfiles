@@ -1,0 +1,28 @@
+#
+# -- macOS-only Homebrew packages --
+#
+# Casks do not exist in Homebrew on Linux, and mas needs the Mac App Store.
+# The cross-platform formulae are in setup/Brewfile.
+#
+# Mac App Store command-line interface
+brew "mas"
+
+#
+# -- Homebrew casks --
+#
+# Code editor. On Linux this comes from setup/zed.sh instead.
+cask "zed"
+# Presentations from Markdown
+cask "deckset"
+# All-In-One Toolkit for Working Remotely
+cask "basecamp"
+# Web browser
+cask "firefox"
+# Web browser (WebKit, by Kagi)
+cask "orion"
+# Multimedia player
+cask "vlc"
+# Claude desktop app
+cask "claude"
+
+# App Store apps are listed in setup/Appstore, installed by ./install-appstore.sh

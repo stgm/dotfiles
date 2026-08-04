@@ -7,6 +7,16 @@
 # .zshenv) and setting them here would only repeat work.
 
 ##############################################################################
+# PATH and environment
+#
+# On Mac OS every terminal tab is a login shell, so .zprofile has already run.
+# Linux terminal emulators start plain interactive shells, which never read it,
+# so source it here when its marker is absent.
+if [[ -z $DOTFILES_PROFILE && -f ~/.zprofile ]]; then
+    source ~/.zprofile
+fi
+
+##############################################################################
 # HISTORY settings
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=50000

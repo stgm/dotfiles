@@ -2,6 +2,7 @@
 set -e
 
 cd "$(dirname "$0")"
+source setup/lib.sh
 
 while IFS= read -r line; do
     [ -z "$line" ] && continue
@@ -11,9 +12,18 @@ while IFS= read -r line; do
     dest="${dest/#\~/$HOME}"
     src="$(pwd)/$src"
 
+    if [ "$(readlink "$dest" 2>/dev/null)" = "$src" ]; then
+        skip "${dest/#$HOME/~}"
+        continue
+    fi
+
     mkdir -p "$(dirname "$dest")"
     ln -sf "$src" "$dest"
-    printf '    %s\n' "${dest/#$HOME/~}"
+    info "${dest/#$HOME/~}"
 done < config.symlinks
 
-chmod 700 "$HOME/.ssh"
+# ssh refuses a config in a directory others can read
+if [ -d "$HOME/.ssh" ] && [ "$(mode_of "$HOME/.ssh")" != 700 ]; then
+    info "tightening permissions on ~/.ssh"
+    chmod 700 "$HOME/.ssh"
+fi

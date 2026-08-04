@@ -1,3 +1,6 @@
 Host *
+    # UseKeychain only exists in Apple's OpenSSH; elsewhere an unknown keyword
+    # is a fatal error, so name it here to have it ignored instead.
+    IgnoreUnknown UseKeychain
     AddKeysToAgent yes
     UseKeychain yes

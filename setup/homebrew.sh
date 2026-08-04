@@ -1,27 +1,43 @@
 #!/bin/bash
 set -e
 
-source "$(dirname "$0")/lib.sh"
+SETUP="$(dirname "$0")"
+source "$SETUP/lib.sh"
 
 say "Homebrew"
-if which brew >/dev/null 2>&1; then
+if command -v brew >/dev/null 2>&1; then
     skip "already installed"
 else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # brew is not on PATH yet during a fresh install. lib.sh already tried these
+    # prefixes, before the install put anything there.
+    for brew in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
+        if [ -x "$brew" ]; then
+            eval "$("$brew" shellenv)"
+            break
+        fi
+    done
 fi
 
-# brew is not on PATH yet during a fresh install
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Installs a Brewfile, but only if something in it is actually missing
+bundle_if_needed() {
+    local file="$1" label="$2"
+    if brew bundle check --file="$file" >/dev/null 2>&1; then
+        skip "everything in $label is installed"
+    else
+        brew bundle --file="$file"
+    fi
+}
 
 say "Homebrew packages"
-# --adopt takes over apps that are already in /Applications but not yet
-# managed by Homebrew, instead of failing on them
-export HOMEBREW_CASK_OPTS="--adopt"
+bundle_if_needed "$SETUP/Brewfile" "the Brewfile"
 
-if brew bundle check --file="$(dirname "$0")/Brewfile" >/dev/null 2>&1; then
-    skip "everything in the Brewfile is installed"
-else
-    brew bundle --file="$(dirname "$0")/Brewfile"
+if is_mac; then
+    # --adopt takes over apps that are already in /Applications but not yet
+    # managed by Homebrew, instead of failing on them
+    export HOMEBREW_CASK_OPTS="--adopt"
+    bundle_if_needed "$SETUP/Brewfile.mac" "Brewfile.mac"
 fi
 
 say "Homebrew Ruby"

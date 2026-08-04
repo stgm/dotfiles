@@ -26,9 +26,24 @@ skip "edit credentials using: bin/rails credentials:edit --environment developme
 cd ~/dev/stgm/course-site
 
 say "Set up Ruby and gems in the course-site clone"
-# Install the Ruby pinned in .ruby-version, then the gems
-rv ruby install
-rv ci
+# Install the Ruby pinned in .ruby-version, then the gems. Both steps read
+# their current state first so a re-run does nothing.
+# .ruby-version may pin a series (3.4) rather than an exact release (3.4.10),
+# so match the installed ruby-<version> directory on a component boundary.
+ruby_version="$(tr -d '[:space:]' < .ruby-version 2>/dev/null || true)"
+if [ -n "$ruby_version" ] &&
+    rv ruby list --installed-only 2>/dev/null |
+    grep -qE "ruby-${ruby_version//./\\.}([./]|$)"; then
+    skip "Ruby $ruby_version already installed"
+else
+    rv ruby install
+fi
+
+if rv run bundle check >/dev/null 2>&1; then
+    skip "gems already installed"
+else
+    rv ci
+fi
 
 say "Development database"
 rv run bin/rails db:prepare

@@ -3,6 +3,8 @@ set -e
 
 source "$(dirname "$0")/lib.sh"
 
+is_mac || { skip "Touch ID for sudo is macOS only"; exit 0; }
+
 # Enable Touch ID for sudo. Apple's sudo_local file survives OS updates,
 # unlike editing /etc/pam.d/sudo directly.
 # Requires sudo, so this will prompt for your password.

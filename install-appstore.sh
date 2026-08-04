@@ -3,6 +3,8 @@ set -e
 
 source "$(dirname "$0")/setup/lib.sh"
 
+is_mac || { skip "App Store apps are macOS only"; exit 0; }
+
 APPSTORE="$(dirname "$0")/setup/Appstore"
 
 # Not part of install.sh: the App Store cannot tell us whether an app is in the

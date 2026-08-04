@@ -10,7 +10,27 @@ else
     ssh-keygen -t ed25519 -C "martijn@stgm.nl" -f ~/.ssh/id_ed25519
 fi
 
-ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+# On Linux there may be no agent running yet; on macOS launchd always provides
+# one. `ssh-add -l` exits 2 when it cannot reach an agent at all, 1 when the
+# agent is there but holds no keys.
+agent_status=0
+ssh-add -l >/dev/null 2>&1 || agent_status=$?
+if [ "$agent_status" -eq 2 ]; then
+    info "starting an ssh-agent"
+    eval "$(ssh-agent -s)" >/dev/null
+fi
+
+# Read the key's fingerprint and only add it if the agent doesn't have it
+fingerprint="$(ssh-keygen -lf ~/.ssh/id_ed25519.pub | awk '{print $2}')"
+if ssh-add -l 2>/dev/null | awk '{print $2}' | grep -qxF "$fingerprint"; then
+    skip "already loaded in the ssh-agent"
+elif is_mac; then
+    # --apple-use-keychain stores the passphrase in the login keychain, so the
+    # key is reloaded automatically after a reboot. Apple's ssh-add only.
+    ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+else
+    ssh-add ~/.ssh/id_ed25519
+fi
 
 say "GitHub"
 # Skipped when already logged in, so this is safe to re-run

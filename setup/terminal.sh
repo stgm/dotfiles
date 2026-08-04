@@ -3,6 +3,8 @@ set -e
 
 source "$(dirname "$0")/lib.sh"
 
+is_mac || { skip "the Terminal profile is macOS only"; exit 0; }
+
 PROFILE=Stegeman
 
 say "Terminal profile"
@@ -23,6 +25,12 @@ else
     info "imported"
 fi
 
-defaults write com.apple.Terminal "Default Window Settings" -string "$PROFILE"
-defaults write com.apple.Terminal "Startup Window Settings" -string "$PROFILE"
-info "set as the default profile -- restart Terminal to pick it up"
+# Read both keys first, so a re-run leaves the preferences untouched
+for key in "Default Window Settings" "Startup Window Settings"; do
+    if [ "$(defaults read com.apple.Terminal "$key" 2>/dev/null || true)" = "$PROFILE" ]; then
+        skip "$key is already $PROFILE"
+    else
+        defaults write com.apple.Terminal "$key" -string "$PROFILE"
+        info "$key set to $PROFILE -- restart Terminal to pick it up"
+    fi
+done

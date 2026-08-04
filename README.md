@@ -1,7 +1,7 @@
 # dotfiles
 
-Personal Mac bootstrap: shell/git/ssh config, Homebrew packages, macOS defaults,
-the Terminal profile, and setup of the `course-site` project.
+Personal bootstrap for macOS and Linux: shell/git/ssh config, Homebrew packages,
+macOS defaults, the Terminal profile, and setup of the `course-site` project.
 
 ## Install script
 
@@ -19,7 +19,28 @@ Or, if already cloned:
 ./install.sh
 ```
 
+Every step reads its current state before writing, so the script can be re-run
+at any time and will only do what is still missing.
+
 ## Specifics
+
+### Linux
+
+The Linux target is Fedora, in practice Asahi Linux on Apple Silicon. Package
+prerequisites are installed with `dnf`; on another distribution the script
+prints what it needs and stops.
+
+The CLI tools come from Homebrew on Linux, using the same `setup/Brewfile` as
+the Mac. Everything in it has a Linux bottle. `mas` and the casks are in
+`setup/Brewfile.mac` and are installed on macOS only.
+
+Zed has no cask on Linux, so `setup/zed.sh` runs its official installer, which
+puts the binary at `~/.local/bin/zed`. Zed reads `~/.config/zed/` on Linux,
+which is where the settings are symlinked anyway. Deckset, Basecamp, Orion and
+the Claude desktop app have no Linux version and are skipped.
+
+The Terminal profile, macOS defaults, Touch ID for sudo and the App Store apps
+are macOS only, and are skipped.
 
 ### App Store
 
