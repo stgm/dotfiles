@@ -12,6 +12,10 @@
 #
 # The repo list is cached and refreshed in the background once a day, so typing
 # never waits on the network (except on the very first use).
+#
+# Arriving in a repo checks origin for new commits, also once a day per repo. If
+# they can be fast-forwarded in it offers to do that, otherwise it just says how
+# the branch stands.
 
 WORK_ORGS=(stgm minprog uvapl spcourse uva-sp uvaai)
 WORK_ROOT=$HOME/dev
@@ -189,9 +193,79 @@ work() {
     if [[ ! -d $dest ]]; then
         mkdir -p ${dest:h}
         git clone git@github.com:$choice.git $dest || return 1
+        # A fresh clone is up to date by definition, so start the day's clock
+        # here instead of fetching again a second later.
+        touch $dest/.git/work-last-fetch
     fi
 
-    cd $dest
+    cd $dest || return 1
+    _work_check_upstream
+}
+
+# Say so when origin has commits we don't have, and fast-forward on request.
+# Runs at most once a day per repo, tracked by the mtime of a stamp file in the
+# repo's own .git directory -- it costs a network round trip, and paying that on
+# every work would make a command that is otherwise instant feel slow.
+#
+# This runs after the cd, so a slow or failing check never stops you getting to
+# the repo. The fetch has to be synchronous because the question below needs its
+# answer, so it says what it is waiting for while it runs.
+#
+# Only a fast-forward is offered. With local commits of your own, rebase or
+# merge is a real decision and belongs to you; this only reports.
+_work_check_upstream() {
+    # Sourced by scripts as well, and a script must not stop on a question.
+    [[ -o interactive ]] || return 0
+
+    setopt localoptions extendedglob
+    local gitdir stamp behind ahead answer
+    local -a fresh
+
+    gitdir=$(git rev-parse --git-dir 2>/dev/null) || return 0
+
+    stamp=$gitdir/work-last-fetch
+    fresh=($stamp(#qNmh-24))
+    (( $#fresh )) && return 0
+
+    # No upstream branch (detached head, a branch never pushed) means there is
+    # nothing to compare against.
+    git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 || return 0
+
+    print -n "checking for upstream changes..."
+    git fetch --quiet 2>/dev/null
+    local fetched=$?
+    print -n "\r\e[K"
+
+    if (( fetched )); then
+        print -u2 "failed to check origin status"
+        return 0
+    fi
+
+    touch $stamp
+
+    # One call gives both counts: commits only they have, then only we have.
+    IFS=$'\t' read -r behind ahead < <(git rev-list --count --left-right @{u}...HEAD)
+    (( behind )) || return 0
+
+    local news="$behind new commit${${behind:#1}:+s} at origin"
+
+    if (( ahead )); then
+        print "$news, diverged from local commits"
+        return 0
+    fi
+
+    # Untracked files can't be in the way of a fast-forward, so they don't count
+    # as a reason to hold back.
+    if [[ -n $(git status --porcelain --untracked-files=no) ]]; then
+        print "$news, but uncommitted changes present"
+        return 0
+    fi
+
+    # read -q would take anything but y as no; this one defaults to yes.
+    read "answer?$news, fast-forward? [Y/n] "
+    [[ -z $answer || $answer == [yY]* ]] || return 0
+
+    git merge --ff-only @{u}
 }
 
 ##############################################################################
