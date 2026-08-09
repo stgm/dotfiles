@@ -1,3 +1,8 @@
+# Toolkit
+
+- `rv` is used to manage ruby
+- `uv` is used to manage python
+
 # Writing style
 
 Use plain, literal words. Say what you mean with the ordinary term for it.
@@ -8,6 +13,7 @@ Use plain, literal words. Say what you mean with the ordinary term for it.
 - Say "run", not "fire off" or "kick off".
 - Say "fix", not "tackle" or "wrangle".
 - Say "fast", not "blazing fast" or "lightning quick".
+- No "footgun", "seam" or other cultish SE language.
 
 These are just examples.
 
