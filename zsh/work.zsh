@@ -5,6 +5,10 @@
 #   <TAB>               move the selection down the list, <S-TAB> back up
 #   <ENTER>             go to the suggestion on the line, tabbed to or not
 #   work --refresh      refetch the repo list now
+#   work -c org/repo [gh flags]
+#                       create a new (public by default) repo on GitHub,
+#                       clone it into place, and go there. No autocomplete
+#                       here since the repo doesn't exist yet to match against
 #
 # At the prompt the suggestion is on screen before enter is pressed, so it is
 # taken as the answer. From a script nothing is on screen, so an ambiguous
@@ -139,9 +143,67 @@ _work_filter() {
     reply=($lead $sub $fuzzy)
 }
 
+# Create a new repo on GitHub, clone it straight into $WORK_ROOT/<org>/<repo>,
+# and go there. Extra args pass through to `gh repo create` (e.g.
+# --description, --private), so the only thing supplied here is a --public
+# default when the caller didn't say --public/--private/--internal.
+_work_create() {
+    if [[ -z $1 || $1 == -* ]]; then
+        print -u2 "usage: work -c <org>/<repo> [gh repo create flags]"
+        return 1
+    fi
+    if ! command -v gh >/dev/null; then
+        print -u2 "work: gh is not installed"
+        return 1
+    fi
+
+    local name=$1; shift
+    if [[ $name != */* ]]; then
+        print -u2 "work: '$name' needs an org, e.g. stgm/$name"
+        return 1
+    fi
+
+    local org=${name%%/*} repo=${name#*/}
+    (( ${WORK_ORGS[(Ie)$org]} )) || {
+        print -u2 "work: '$org' is not in \$WORK_ORGS ($WORK_ORGS)"
+        return 1
+    }
+
+    local dest=$WORK_ROOT/$org/$repo
+    if [[ -d $dest ]]; then
+        print -u2 "work: $dest already exists"
+        return 1
+    fi
+
+    local -a flags=("$@")
+    local f has_vis=0
+    for f in $flags; do
+        [[ $f == --public || $f == --private || $f == --internal ]] && has_vis=1
+    done
+    (( has_vis )) || flags+=(--public)
+
+    # gh clones into ./<repo>, so run it from the org directory to land
+    # straight in $dest instead of somewhere we'd have to move it from.
+    mkdir -p $WORK_ROOT/$org
+    (cd $WORK_ROOT/$org && gh repo create "$name" --clone $flags) || return 1
+
+    # A fresh clone is up to date by definition, same as a plain `work` clone.
+    touch $dest/.git/work-last-fetch
+    cd $dest || return 1
+
+    # The new repo won't be in the cache yet; pick it up for next time without
+    # making this command wait on a full org listing.
+    (_work_refresh >/dev/null 2>&1 &)
+}
+
 work() {
     if [[ $1 == -r || $1 == --refresh ]]; then
         _work_refresh && print "work: cached $(wc -l <$WORK_CACHE | tr -d ' ') repositories"
+        return
+    fi
+
+    if [[ $1 == -c ]]; then
+        _work_create "${@:2}"
         return
     fi
 
@@ -373,7 +435,7 @@ _work_live_redraw() {
     _work_live_cycle=()
     _work_live_index=0
 
-    if [[ $BUFFER != work\ * ]]; then
+    if [[ $BUFFER != work\ * || $BUFFER == work\ -c* ]]; then
         [[ -n $_work_live_shown ]] && { zle -M ""; _work_live_shown= }
         return
     fi
