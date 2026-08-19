@@ -16,6 +16,8 @@ brew "ffmpeg"
 brew "gh"
 # Implementation of the file(1) command
 brew "libmagic"
+# Command-line JSON processor
+brew "jq"
 # Postgres C API library. Not on PATH: the pg gem ships a precompiled binary
 # with its own copy. Kept for the case where pg has to build from source.
 brew "libpq"

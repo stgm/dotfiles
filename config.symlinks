@@ -7,3 +7,5 @@ ssh/config -> ~/.ssh/config
 zed/settings.json -> ~/.config/zed/settings.json
 zed/keymap.json -> ~/.config/zed/keymap.json
 claude/CLAUDE.md -> ~/.claude/CLAUDE.md
+claude/skills -> ~/.claude/skills
+claude/hooks -> ~/.claude/hooks

@@ -13,7 +13,7 @@ Use plain, literal words. Say what you mean with the ordinary term for it.
 - Say "run", not "fire off" or "kick off".
 - Say "fix", not "tackle" or "wrangle".
 - Say "fast", not "blazing fast" or "lightning quick".
-- No "footgun", "seam" or other cultish SE language.
+- No "footgun", "seam", "load-bearing" or other cultish SE language.
 - Don't explicitly say "honest", I assume you do stuff honestly.
 
 These are just examples.
