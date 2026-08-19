@@ -1,0 +1,14 @@
+// Global Zed tasks. Run via "task: spawn" in the command palette
+// (cmd-shift-p), or "task: rerun" to repeat the last one.
+[
+  {
+    "label": "Open project on GitHub",
+    "command": "url=$(git -C \"$ZED_WORKTREE_ROOT\" remote get-url origin); url=\"${url%.git}\"; case \"$url\" in git@*) url=\"${url#git@}\"; url=\"${url/://}\"; url=\"https://$url\";; ssh://git@*) url=\"https://${url#ssh://git@}\";; esac; open \"$url\"",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "no_focus",
+    "reveal_target": "dock",
+    "hide": "on_success",
+    "shell": "system",
+  },
+]
