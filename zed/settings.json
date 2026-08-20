@@ -86,7 +86,7 @@
         "light": "macOS Classic Light",
         "dark": "macOS Classic Dark",
     },
-    "soft_wrap": "prefer_line",
+    "soft_wrap": "bounded",
     "tab_size": 4,
     "base_keymap": "TextMate",
     "language_models": {
