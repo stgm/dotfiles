@@ -57,3 +57,8 @@ zstyle ':vcs_info:git:*' formats ' %b'
 precmd_functions+=(vcs_info)   # appended, so it can't displace another precmd
 setopt PROMPT_SUBST            # re-expand ${vcs_info_msg_0_} on every prompt
 PS1='%F{green}%~%f%F{221}${vcs_info_msg_0_}%f %% '
+
+# Qwen Code PATH block begin
+export PATH='/Users/martijn/.local/bin':$PATH
+# Qwen Code PATH block end
+

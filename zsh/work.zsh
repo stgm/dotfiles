@@ -21,7 +21,7 @@
 # they can be fast-forwarded in it offers to do that, otherwise it just says how
 # the branch stands.
 
-WORK_ORGS=(stgm minprog uvapl spcourse uva-sp uvaai)
+WORK_ORGS=(stgm minprog uvapl spcourse uva-sp uvaai prgbas)
 WORK_ROOT=$HOME/dev
 WORK_CACHE=$HOME/.cache/work-repos.txt
 WORK_LIVE_MAX=${WORK_LIVE_MAX:-10}   # cap on the as-you-type list

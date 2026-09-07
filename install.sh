@@ -109,7 +109,6 @@ done
 
 ./setup/python.sh
 ./setup/zed.sh
-./setup/claude.sh
 
 if is_mac; then
     ./setup/mac_defaults.sh
